@@ -40,3 +40,7 @@ robb.stark@gmail.com | password      (supervisor)
 ned.stark@gmail.com | password       (department head)
 peter.baelish@gmail.com | password   (benefits coordinator)
 
+## Project Architecture
+The user can connect and login to the application. The application will then communicate with the server returning that user allowing them to access the application.
+From the home page the user can view or create tuition forms. The tuition forms then communicate with the server and are sent to their respectful databases. A user can then login with a user with higher permissions. This user can then approve or deny these forms. 
+
