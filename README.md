@@ -1,4 +1,4 @@
-# Project 1
+# TRMS
 
 ## The Tuition Reimbursement Management System (TRMS) is an application designed to allow a user to create a tuition request form for reimbursement.
 
