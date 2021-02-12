@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+
+    <title>TRMS Tools</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/cover/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet">
+  
+</head>
+<body class="text-center" data-new-gr-c-s-check-load="8.869.0" data-gr-ext-installed="">
+
+
+
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link" href="http://localhost:8080/Project1/index.html">Home</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/event.html">Create</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/pending.html">Pending</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/approved.html">Approved</a>
+            <a class="nav-link active" href="http://localhost:8080/Project1/supertools.html">Inc. Requests</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/message.html">Message</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/inbox.html">Inbox</a>
+             <a class="nav-link" href="http://localhost:8080/Project1/login.html">Logout</a>
+          </nav>
+        </div>
+      </header>
+
+
+<!--  middle of page  -->
+      <main role="main" class="inner cover">
+
+	 <label for="exampleFormControlSelect2">Pending Approval</label>
+    <select id="pendtable" multiple class="form-control"  id="exampleFormControlSelect2">
+
+    </select>
+
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">Event Info</label>
+    <textarea class="form-control" id="textbox" rows="3" style="height: 400px;"></textarea>
+  </div>
+		 <button onclick = "approve()" class="btn btn-primary">Approve</button>
+		  <button onclick = "decline()" class="btn btn-primary">Decline</button>
+      </main>
+
+      <footer class="mastfoot mt-auto">
+      
+      <!--  display middle bottom  -->
+        <div class="inner">
+        </div>
+      </footer>
+    </div>
+<script>
+	var mytextbox = document.getElementById('textbox');
+	var mydropdown = document.getElementById('pendtable');
+    mydropdown.onchange = function(){
+        mytextbox.value = this.value; 
+  }
+
+</script>
+<script>
+var pendingEvents;
+function displayPendingEvents()
+{
+
+	//Make an AJAX call
+	let xhttp = new XMLHttpRequest();
+	
+	xhttp.onreadystatechange = function()
+	{
+		if(this.readyState == 4 && this.status == 200)
+		{
+				console.log(this.responseText);
+				
+				pendingEvents = JSON.parse(this.responseText);
+				var sel = document.getElementById('pendtable');
+				for(var i = 0; i < pendingEvents.length; i++)
+				{
+					console.log(pendingEvents[i].id);	
+					var opt = document.createElement('option');
+					opt.appendChild( document.createTextNode('Event: ' + pendingEvents[i].id));
+					opt.value = "Name: " + pendingEvents[i].fname + " " + pendingEvents[i].lname + "\n" + "location: " + pendingEvents[i].location + "\n" + "Reimbursement: " + pendingEvents[i].reimbursment
+					+ "\n" + "Description: " + pendingEvents[i].description + "\n" + "Time: " + pendingEvents[i].time + "\n" + "Date: " + pendingEvents[i].date;
+					sel.appendChild(opt);
+				}
+				
+		}
+	}
+	
+	xhttp.open("GET", "http://localhost:8080/Project1/viewIncRequests.do", true);
+	xhttp.send();
+}
+window.onload = displayPendingEvents;
+
+function approve()
+{
+	console.log(pendingEvents)
+	var e = document.getElementById("pendtable");
+	var textbox = document.getElementById("textbox");
+
+
+
+	let event = {
+			id: pendingEvents[e.selectedIndex].id,
+			fname: pendingEvents[e.selectedIndex].fname,
+			lname: pendingEvents[e.selectedIndex].lname,
+			location: pendingEvents[e.selectedIndex].location,
+			description: pendingEvents[e.selectedIndex].description,
+			status: "approved",
+			time: pendingEvents[e.selectedIndex].time,
+			reimbursment: pendingEvents[e.selectedIndex].reimbursment,
+			letterGrade: pendingEvents[e.selectedIndex].letterGrade,
+			date: pendingEvents[e.selectedIndex].date,
+			gradeid: pendingEvents[e.selectedIndex].gradeid,
+			typeid: pendingEvents[e.selectedIndex].typeid,
+			empid: pendingEvents[e.selectedIndex].empid
+	}
+	
+	//Make an AJAX Call
+	let xhttp = new XMLHttpRequest();
+	
+	xhttp.onreadystatechange = function()
+	{
+		console.log(this.readyState);
+		if(this.readyState == 4 && this.status == 200)
+		{
+			console.log("Successfully logged");
+			console.log(this.responseText);	
+			alert("Event approved");
+			e.remove(e.selectedIndex);
+			mytextbox.value = "";
+		}
+	}
+	xhttp.open("POST", "http://localhost:8080/Project1/approveEvent.do", true);
+	
+	//Set a request header which will indicate to the server that the request body will be JSON
+	xhttp.setRequestHeader("Content-Type", "application/json");
+	
+	//Send, but now we will pass in the Request Body as a parameter of the function
+	xhttp.send(JSON.stringify(event));
+}
+function decline()
+{
+	console.log(pendingEvents)
+	var e = document.getElementById("pendtable");
+	var textbox = document.getElementById("textbox");
+	console.log(e.selectedIndex);
+
+
+	let event = {
+			id: pendingEvents[e.selectedIndex].id,
+			fname: pendingEvents[e.selectedIndex].fname,
+			lname: pendingEvents[e.selectedIndex].lname,
+			location: pendingEvents[e.selectedIndex].location,
+			description: pendingEvents[e.selectedIndex].description,
+			status: "approved",
+			time: pendingEvents[e.selectedIndex].time,
+			reimbursment: pendingEvents[e.selectedIndex].reimbursment,
+			letterGrade: pendingEvents[e.selectedIndex].letterGrade,
+			date: pendingEvents[e.selectedIndex].date,
+			gradeid: pendingEvents[e.selectedIndex].gradeid,
+			typeid: pendingEvents[e.selectedIndex].typeid,
+			empid: pendingEvents[e.selectedIndex].empid
+	}
+	
+	//Make an AJAX Call
+	let xhttp = new XMLHttpRequest();
+	
+	xhttp.onreadystatechange = function()
+	{
+		console.log(this.readyState);
+		if(this.readyState == 4 && this.status == 200)
+		{
+			console.log("Successfully logged");
+			console.log(this.responseText);	
+			alert("Event Deleted");
+			e.remove(e.selectedIndex);
+			mytextbox.value = "";
+		}
+	}
+	xhttp.open("POST", "http://localhost:8080/Project1/deleteEvent.do", true);
+	
+	//Set a request header which will indicate to the server that the request body will be JSON
+	xhttp.setRequestHeader("Content-Type", "application/json");
+	
+	//Send, but now we will pass in the Request Body as a parameter of the function
+	xhttp.send(JSON.stringify(event));
+}
+</script>
+
+</body>
+</html>

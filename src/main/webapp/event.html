@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>TRMS Create</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/cover/">
+
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet">
+  
+</head>
+<body class="text-center" data-new-gr-c-s-check-load="8.869.0" data-gr-ext-installed="">
+
+
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link" href="http://localhost:8080/Project1/index.html">Home</a>
+            <a class="nav-link active" href="http://localhost:8080/Project1/event.html">Create</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/pending.html">Pending</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/approved.html">Approved</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/supertools.html">Inc. Requests</a>
+             <a class="nav-link" href="http://localhost:8080/Project1/message.html">Message</a>
+             <a class="nav-link" href="http://localhost:8080/Project1/inbox.html">Inbox</a>
+            <a onclick = "logout()" class="nav-link" href="http://localhost:8080/Project1/login.html">Logout</a>
+          </nav>
+        </div>
+      </header>
+
+
+<!--  middle of page  -->
+      <main role="main" class="inner cover">
+
+
+  <div class="form-group">
+    <label for="exampleInputEmail1">First name</label>
+    <input type="text" class="form-control" id="fname" aria-describedby="emailHelp" placeholder="First name">
+    
+    <label for="exampleInputPassword1">Last name</label>
+    <input type="text" class="form-control" id="lname" placeholder="Last name">
+    
+    <label for="event_location">Event Location</label>
+    <input type="text" class="form-control" id="location" placeholder="Event location">
+    
+     <label for="event_description">Description</label>
+    <input type="text" class="form-control" id="description" placeholder="description">
+    
+    <label for="event_time">Time</label>
+    <input type="text" class="form-control" id="time" placeholder="00:00 PM/AM">
+    
+    <label for="event_date">Date</label>
+    <input type="text" class="form-control" id="date" placeholder="date">
+    
+     <label for="event_reimbursement">Reimbursement Cost</label>
+    <input type="number" class="form-control" id="Reimbursement" placeholder="$00.00">
+    
+     <label for="event_lettergrade">Required passing grade</label>
+     <select class="form-control" id="lettergrade">
+      <option>A</option>
+      <option>B</option>
+      <option>C</option>
+      <option>D</option>
+    </select>
+    
+     <label for="event_gradetype">Presentation required?</label>
+    <select class="form-control" id="gradetype">
+      <option>Presentation Required</option>
+      <option>No Presentation</option>
+    </select>
+    
+     <label for="event_type">Type of event</label>
+    <select class="form-control" id="eventtype">
+      <option>University Courses</option>
+      <option>Seminars</option>
+      <option>Certification Prep</option>
+      <option>Certification</option>
+      <option>Technical Training</option>
+       <option>Other</option>
+    </select>
+    
+  </div>
+  <button onclick = "addEvent()" class="btn btn-primary">Submit</button>
+
+
+
+
+      </main>
+
+      <footer class="mastfoot mt-auto">
+      
+      <!--  display middle bottom  -->
+        <div class="inner">
+        </div>
+      </footer>
+    </div>
+
+  
+ <script>
+function addEvent()
+{
+	let afname = document.getElementById("fname").value;
+	let alname = document.getElementById("lname").value;
+	let alocation = document.getElementById("location").value;
+	let adescription = document.getElementById("description").value;
+	let atime = document.getElementById("time").value;
+	let adate = document.getElementById("date").value;
+	let areimbursement = +document.getElementById("Reimbursement").value;
+	let astatus = "pending";
+	var x = document.getElementById("lettergrade");
+	var i = x.selectedIndex;
+	let alettergrade = x.options[i].text;
+	
+	var l = document.getElementById("gradetype");
+	let agradetype = l.selectedIndex + 1;
+
+	
+	var t = document.getElementById("eventtype");
+	let aeventtype = t.selectedIndex + 1;
+
+	
+	//Lets make a JS object with these variables and any values we will need
+	//Doing so will make it easy to make a json out of these values
+	let event = {
+			id:0,
+			fname: afname,
+			lname: alname,
+			location: alocation,
+			description: adescription,
+			status: astatus,
+			time: atime,
+			reimbursment: areimbursement,
+			letterGrade: alettergrade,
+			date: adate,
+			gradeid: agradetype,
+			typeid: aeventtype,
+			empid:0
+	}
+
+	
+	var test = JSON.stringify(event);
+	console.log("test: " + test);
+	//Make an AJAX Call
+	let xhttp = new XMLHttpRequest();
+	
+	xhttp.onreadystatechange = function()
+	{
+		console.log(this.readyState);
+		if(this.readyState == 4 && this.status == 200)
+		{
+			console.log("Successfully logged");
+			console.log(this.responseText);	
+			alert("Event created, proud of you.");
+			window.location.href = "http://localhost:8080/Project1/index.html";
+		}
+	}
+	xhttp.open("POST", "http://localhost:8080/Project1/addEvent.do", true);
+	
+	//Set a request header which will indicate to the server that the request body will be JSON
+	xhttp.setRequestHeader("Content-Type", "application/json");
+	
+	//Send, but now we will pass in the Request Body as a parameter of the function
+	xhttp.send(JSON.stringify(event));
+	
+
+	
+}
+</script>
+
+
+</body>
+</html>

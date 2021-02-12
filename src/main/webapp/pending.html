@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+
+    <title>TRMS Pending</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/cover/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet">
+  
+</head>
+<body class="text-center" data-new-gr-c-s-check-load="8.869.0" data-gr-ext-installed="">
+
+
+
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link" href="http://localhost:8080/Project1/index.html">Home</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/event.html">Create</a>
+            <a class="nav-link active" href="http://localhost:8080/Project1/pending.html">Pending</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/approved.html">Approved</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/supertools.html">Inc. Requests</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/message.html">Message</a>
+            <a class="nav-link" href="http://localhost:8080/Project1/inbox.html">Inbox</a>
+             <a class="nav-link" href="http://localhost:8080/Project1/login.html">Logout</a>
+          </nav>
+        </div>
+      </header>
+
+
+<!--  middle of page  -->
+      <main role="main" class="inner cover">
+
+	 <label for="exampleFormControlSelect2">Current Pending Events</label>
+    <select id="pendtable" multiple class="form-control"  id="exampleFormControlSelect2">
+
+    </select>
+
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">Event Info</label>
+    <textarea class="form-control" id="textbox" rows="3" style="height: 400px;"></textarea>
+  </div>
+		
+      </main>
+
+      <footer class="mastfoot mt-auto">
+      
+      <!--  display middle bottom  -->
+        <div class="inner">
+        </div>
+      </footer>
+    </div>
+<script>
+	var mytextbox = document.getElementById('textbox');
+	var mydropdown = document.getElementById('pendtable');
+    mydropdown.onchange = function(){
+        mytextbox.value = this.value; 
+  }
+
+</script>
+<script>
+function displayPendingEvents()
+{
+	//Make an AJAX call
+	let xhttp = new XMLHttpRequest();
+	
+	xhttp.onreadystatechange = function()
+	{
+		if(this.readyState == 4 && this.status == 200)
+		{
+				console.log(this.responseText);
+				
+				let pendingEvents = JSON.parse(this.responseText);
+				var sel = document.getElementById('pendtable');
+				for(var i = 0; i < pendingEvents.length; i++)
+				{
+					console.log(pendingEvents[i].id);	
+					var opt = document.createElement('option');
+					opt.appendChild( document.createTextNode(i+1));
+					opt.value = "Name: " + pendingEvents[i].fname + " " + pendingEvents[i].lname + "\n" + "locationed: " + pendingEvents[i].location + "\n" + "Reimbursement: " + pendingEvents[i].reimbursment
+					+ "\n" + "Description: " + pendingEvents[i].description + "\n" + "Time: " + pendingEvents[i].time + "\n" + "Date: " + pendingEvents[i].date;
+					sel.appendChild(opt);
+				}
+				
+		}
+	}
+	
+	xhttp.open("GET", "http://localhost:8080/Project1/viewPendingEvents.do", true);
+	xhttp.send();
+}
+window.onload = displayPendingEvents;
+</script>
+
+</body>
+</html>
